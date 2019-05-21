@@ -1,7 +1,6 @@
 require "mechanize"
 require 'open-uri'
 require 'fileutils'
-
 # TEMP: 提出用のメソッドを作成する余地あり
 
 class Atcoder
@@ -15,19 +14,19 @@ class Atcoder
   end
 
   def login
-    puts "login ..."
+    puts "[info] login ..."
     login_url = "https://atcoder.jp/login?lang=ja"
     begin
       @agent.get(login_url).form_with(class: "form-horizontal") do |form|
-        form.field_with(name: "username").value = "" # ユーザー名
-        form.field_with(name: "password").value = "" # パスワード
+        form.field_with(name: "username").value = ""
+        form.field_with(name: "password").value = ""
       end.submit
     rescue => e
-      puts "FAILED login"
+      puts "[info] FAILED login"
       puts e
       puts 1
     end
-    puts "logined !!!"
+    puts "[info] logined !!!"
   end
 
   def get_taskslist(tasks_url)
@@ -37,13 +36,15 @@ class Atcoder
       links = task_page.search('//*[@id="main-container"]/div[1]/div[2]/div/table/tbody/tr/td/a')
       links.each_with_index do |link, i|
         if (i+1) % 3 == 0
-          name = links[i-2].text + " - " +  links[i-1].text
+          name = links[i-2].text + "_" +  links[i-1].text
+          name = name.gsub("/", ":")
+          name = name.gsub(" ","_")
           @task_list_href.store(name, links[i-1].get_attribute(:href))
           @submit_links.store(name, link.get_attribute(:href))
         end
       end
     rescue => e
-        puts "FAILED get_taskslist method"
+        puts "[info] FAILED get_taskslist method"
         puts e
         exit 1
     end
@@ -52,7 +53,8 @@ class Atcoder
   def get_in_and_out(task_url, task_name)
     # task_url: 問題ページのURL
     # task_name: 問題名
-
+    task_name = task_name.gsub("/", ":")
+    task_name = task_name.gsub(" ","_")
     @in_and_out.store(task_name, {}) # 問題のサンプルの保存祭
     @in_and_out[task_name].store("in", {}) # 入力の保存先
     @in_and_out[task_name].store("out",{}) # 出力の保存先
@@ -61,7 +63,7 @@ class Atcoder
       page = @agent.get(task_url)
       samples = page.search('pre')
       leng = samples.length
-      samples = samples[1..(leng / 2 - 1)].map { |e| e.text.gsub("\r", "") }
+      samples = samples[1..(leng / 2 - 1)].map { |e| e.text.gsub("\r", "") } # BUG: 英語圏向けのコンテストと同時開催じゃないと正しくサンプルを取得できない
 
       samples.each_with_index do |sample, i|
         count = i / 2 + 1
@@ -72,14 +74,14 @@ class Atcoder
         end
       end
     rescue => e
-      puts "FAILED get_in_and_out method"
+      puts "[info] FAILED get_in_and_out method"
       puts e
     end
   end
 
   def get_samples(tasks_url)
 
-    puts "taking samples..."
+    puts "[info] taking samples..."
 
     # tasks_url : 問題一覧ページのURL
     get_taskslist(tasks_url)
@@ -88,7 +90,7 @@ class Atcoder
       get_in_and_out(baseurl + url, name)
     end
 
-    puts "taked samples !!!"
+    puts "[info] taked samples !!!"
 
   end
 
@@ -101,7 +103,7 @@ class User < Atcoder
     test_save = "./test"  # 入力を保存するディレクトリ
     result_save = "./result" # 結果を保存するディレクトリ
 
-    puts "saving samples..."
+    puts "[info] saving samples..."
 
     if @in_and_out != {} && @in_and_out != nil
       @in_and_out.each do |name, task|
@@ -118,10 +120,10 @@ class User < Atcoder
         end
       end
     else
-      puts "FAILED. No sample case"
+      puts "[info] FAILED. No sample case"
       exit 1
     end
-    puts "saved samples !!!"
+    puts "[info] saved samples !!!"
   end
 end
 

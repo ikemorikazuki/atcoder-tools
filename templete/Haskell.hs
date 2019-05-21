@@ -1,20 +1,11 @@
 import Control.Monad
 import Control.Applicative
 import Data.List
+import qualified Data.Map as M
+--import qualified Data.Vector as V
+--import qualified Data.Vector.Mutable as VM
 
--- String, Int, Char, 
-
--- e.g.
--- 1
--- [a] <- map read . words <$> getline => [1] -> a == 1
--- 1
--- a <- readlLn
--- 1 2 3
--- lst <- map read . words <$> getLine => [1, 2, 3]
--- 1 2 3
--- [l, m, n] <- map read . words <$. getLine :: IO [Int] => [1, 2, 3]
--- 'a'
--- c <- getChar => c == 'a'
+-- getBysplit = map read . words <$> getLine
 
 main :: IO()
 main = undefined

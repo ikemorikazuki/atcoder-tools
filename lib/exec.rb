@@ -2,7 +2,7 @@ require 'open3'
 require 'shellwords'
 
 module Exec
-  # DEBUG: exec_c, exec_py, exec_scalaの実装が残っている
+  # DEBUG: exec_c, exec_pyの実装が残っている
 
   def save(content, task, name)
     f = File.open('./result/' + task + '/' + name, "w")
@@ -10,22 +10,29 @@ module Exec
     f.close
   end
 
+  def finish(text, err)
+    puts "[info] " + text
+    print err
+    files = Dir.glob('./bin/*')
+    files.each { |e| File.delete(e) }
+  end
+
   def exec_rb(file, rt)
     # fileはrubyプログラム
     task = File.basename(file, ".*")
 
-    input_files_path = Dir.glob('./test/' + task + '/' +  'in/*')
+    input_files_path = Dir.glob('./test/' + task + '/' +  'in/*').sort
 
     input_files_path.each  do |input|
       name = input[-1]
 
-      input = File.read('./test/' + task + '/in/' + name)
-      o, e, _ = Open3.capture3("ruby " + "./src/#{Shellwords.escape(file)}" , :stdin_data=>input)
+      input_data = File.read('./test/' + task + '/in/' + name)
+      o, e, w = Open3.capture3("ruby " + "./src/Ruby/#{Shellwords.escape(file)}" , :stdin_data=>input_data)
 
-      if e != ""
-        puts "[info] FAILED"
+      if w.exitstatus != 0
+
         puts e
-        exit 1
+        return false
       else
         printf("\e[36mSAMPLE[%s]\e[m >>>>> %s", name, o) if rt
         save(o, task, name)
@@ -39,76 +46,148 @@ module Exec
     # fileはrubyプログラム
     task = File.basename(file, ".*")
 
-    input_files_path = Dir.glob('./test/' + task + '/' +  'in/*')
+    input_files_path = Dir.glob('./test/' + task + '/' +  'in/*').sort
 
-    input_files_path.each_with_index  do |input, i|
-      name = input[-1]
-      e = ""
+    printf("[info] compile now ...\n")
+    o, e, w = Open3.capture3("stack ghc -- " + "./src/Haskell/#{Shellwords.escape(file)}" +  " -outputdir ./bin -o ./bin/Main")
 
-      input = File.read('./test/' + task + '/in/' + name)
-      if i == 0
-        printf("[info] compile now ...\n")
-        o, e, _ = Open3.capture3("stack ghc -- " + "./src/#{Shellwords.escape(file)}" +  " -outputdir ./bin -o ./bin/Main")
-        printf("[info] comiled!!\n") 
-      end
-
-      if e != ""
-        puts "[info] FAILED"
-        puts e
-        exit 1
-      else
-        puts o
-        out, err, _ = Open3.capture3('./bin/Main', :stdin_data=>input)
-        if err != ""
-          puts "[info] FAILED"
-          puts e
-          exit 1
-        else
-          printf("\e[36mSAMPLE[%s]\e[m >>>>> %s", name, out) if rt
-          save(out, task, name)
-        end
-      end
+    if w.exitstatus != 0
+      finish("\e[31mFAILED comlied :(\e[m", e + "\n")
+      return false
     end
+
+    puts "[info] comiled!!!"
+    puts o
+
+
+    input_files_path.each  do |input|
+      name = input[-1]
+      input_data = File.read('./test/' + task + '/in/' + name)
+      out, err, ww = Open3.capture3('./bin/Main', :stdin_data=>input_data)
+
+      if ww.exitstatus != 0
+        finish("\e[31mFAILED :(\e[m", err + "\n")
+        return false
+      else
+        printf("\e[36mSAMPLE[%s]\e[m >>>>> %s\n", name, out) if rt
+        save(out, task, name)
+      end
+      puts "[info] \e[32msucess!!\e[m  #{input}"
+    end
+    finish("complete","")
+    return true
+  end
+
+
+  def exec_rs(file, rt)
+    # fileはrubyプログラム
+    task = File.basename(file, ".*")
+
+    input_files_path = Dir.glob('./test/' + task + '/' +  'in/*').sort
+
+    printf("[info] compile now ...\n")
+    o, e, w = Open3.capture3("rustc -O ./src/Rust/#{Shellwords.escape(file)}  -o ./bin/Main")
+
+    if w.exitstatus != 0
+      finish("\e[31mFAILED comiled :(\e[m", e + "\n")
+      o, e, _ = Open3.capture3("rustc --explain E0573")
+      puts e
+      return false
+    end
+
+    puts "[info] \e[32mcomiled!!!\e[m "
+    puts e
+    #puts o
+
+
+    input_files_path.each  do |input|
+      name = input[-1]
+      input_data = File.read('./test/' + task + '/in/' + name)
+      out, err, ww = Open3.capture3('RUST_BACKTRACE=1 ./bin/Main', :stdin_data=>input_data)
+
+      if ww.exitstatus != 0
+        finish("\e[31mFAILED :(\e[m", err + "\n")
+        return false
+      else
+        printf("\e[36mSAMPLE[%s]\e[m >>>>> %s\n", name, out) if rt
+        save(out, task, name)
+      end
+      puts "[info] \e[32msucess!!\e[m  #{input}"
+    end
+    finish("complete","")
+    return true
   end
 
   def exec_scala(file, rt)
     # fileはrubyプログラム
     task = File.basename(file, ".*")
 
-    input_files_path = Dir.glob('./test/' + task + '/' +  'in/*')
+    input_files_path = Dir.glob('./test/' + task + '/' + 'in/*').sort
 
-    input_files_path.each_with_index  do |input, i|
-      name = input[-1]
-      e = ""
+    printf("[info] compile now ...\n")
+    _, e, w = Open3.capture3("scalac -d" + " ./bin" + " ./src/Scala/#{Shellwords.escape(file)}")
 
-      input = File.read('./test/' + task + '/in/' + name)
-
-      if i == 0
-        printf("[info] compile now ...")
-        o, e, _ = Open3.capture3("scalac -d" + " ./bin"+ " ./src/#{Shellwords.escape(file)}")
-        printf("[info] compiled!!\n")
-      end
-
-      if e != ""
-        puts "[info] FAILED"
-        puts e
-        exit 1
-      else
-        puts o
-        out, err, _ = Open3.capture3('scala -cp ./bin Main', :stdin_data=>input)
-        if err != ""
-          puts "[info] FAILED"
-          puts e
-          exit 1
-        else
-          printf("\e[36mSAMPLE[%s]\e[m >>>>> %s", name, out) if rt
-          save(out, task, name)
-        end
-      end
+    if w.exitstatus != 0
+      finish("FAILED comiled", e + "\n")
+      return false
     end
+    printf("[info] compiled!!\n")
+
+    input_files_path.each  do |input|
+
+      name = input[-1]
+      input_data = File.read('./test/' + task + '/in/' + name)
+      out, err, ww = Open3.capture3('scala -cp ./bin Main', :stdin_data=>input_data)
+      if ww.exitstatus == 1
+        finish("FAILED", err + "\n")
+        return false
+      else
+        printf("\e[36mSAMPLE[%s]\e[m >>>>> %s", name, out) if rt
+        save(out, task, name)
+      end
+      puts "[info] sucess!! #{input}"
+    end
+    finish("sucess!!!", "")
+    return true
   end
 
-  module_function :save, :exec_rb, :exec_hs, :exec_scala
+
+  def exec_go(file, rt)
+    # fileはrubyプログラム
+    task = File.basename(file, ".*")
+
+    input_files_path = Dir.glob('./test/' + task + '/' + 'in/*').sort
+
+    printf("[info] compile now ...\n")
+    _, e, w = Open3.capture3("go build -o" + " ./bin/Main" + " ./src/Go/#{Shellwords.escape(file)}")
+
+    if w.exitstatus != 0
+      finish("FAILED comiled", e + "\n")
+      return false
+    end
+    printf("[info] compiled!!\n")
+
+    input_files_path.each  do |input|
+
+      name = input[-1]
+      input_data = File.read('./test/' + task + '/in/' + name)
+      out, err, ww = Open3.capture3('./bin/Main', :stdin_data=>input_data)
+      if ww.exitstatus != 0
+        finish("FAILED", err + "\n")
+        return false
+      else
+        printf("\e[36mSAMPLE[%s]\e[m >>>>> %s", name, out) if rt
+        save(out, task, name)
+      end
+      puts "[info] sucess!! #{input}"
+    end
+    finish("sucess!!!", "")
+    return true
+  end
+
+
+
+  module_function :save, :finish, :exec_rb, :exec_hs, :exec_scala, :exec_rs, :exec_go
 end
 
 
