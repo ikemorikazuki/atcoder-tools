@@ -2,7 +2,7 @@ require "fileutils"
 require 'open-uri'
 require 'fssm'
 require 'shellwords'
-require #'compare.rb'の絶対パス
+require 'compare.rbの絶対パス'
 
 
 module Project
@@ -11,10 +11,10 @@ module Project
 
   def init
     # 初期ディレクトリとconfigファイルの作成
-    puts "make directory...  ./src, ./test, ./bin, ./result"
+    puts "[info] make directory...  ./src, ./test, ./bin, ./result"
     FileUtils.mkdir_p(['./src', './test', './bin','./result'])
 
-    puts 'make file... config'
+    puts '[info] make file... config'
     File.open('config.txt', "w")
   end
 
@@ -27,6 +27,8 @@ module Project
     language = list.keys[n-1]
     ext = list[language]
 
+    FileUtils.mkdir_p("./src/" + language)
+
     templete = File.read("/Users/ikemorikaduki/Documents/Myprograming/atcoder-tools/templete/" + language + ext)
 
     task_list = []
@@ -34,8 +36,13 @@ module Project
       task_list.push(line.chomp)
     }
 
+    language_file = File.open("./language.txt", "a")
+    language_file.puts language
+    language_file.close
+
+
     task_list.each do |task|
-      source = File.open("./src/" + task + ext, "w")
+      source = File.open("./src/" + language + "/" + task + ext, "w")
       source.puts templete
       source.close
     end
@@ -46,15 +53,19 @@ module Project
     ext = File.extname(Shellwords.escape(file)) # fileの拡張子
     case ext
     when ".rb" then
-      Exec.exec_rb(file, rt)
+      return Exec.exec_rb(file, rt)
     when ".py" then
-      Exec.exec_py(file, rt)
+      return Exec.exec_py(file, rt)
     when ".hs" then
-      Exec.exec_hs(file, rt)
+      return Exec.exec_hs(file, rt)
+    when ".rs" then
+      return Exec.exec_rs(file, rt)
     when ".scala"
-      Exec.exec_scala(file, rt)
+      return Exec.exec_scala(file, rt)
     when ".c" then
-      Exec.exec_c(file, rt)
+      return Exec.exec_c(file, rt)
+    when ".go" then
+      return Exec.exec_go(file, rt)
     else
       puts "no enviroment #{file}"
       exit 1
@@ -62,8 +73,8 @@ module Project
   end
 
   def test(file)
-    run(file, false)
-    Compare.compare(file)
+    state = run(file, false)
+    Compare.compare(file) if state
   end
 
   def watching_test
@@ -71,7 +82,8 @@ module Project
     FSSM.monitor('./src', '**/*') do
       update do |_, file|
         printf("=============\e[33m{NUMBER : %s}\e[m=============\n", count)
-        Project.test(file)
+        f = File.basename(file)
+        Project.test(f)
         count += 1
       end
 

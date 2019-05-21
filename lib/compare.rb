@@ -1,4 +1,4 @@
-require #exec.rbの絶対パス
+require '/Users/ikemorikaduki/Documents/Myprograming/atcoder-tools/lib/exec.rb'
 require 'shellwords'
 
 
@@ -36,7 +36,7 @@ module Compare
 
     task = File.basename(file, '.*')
 
-    out_paths = Dir.glob('./test/' + task + '/out/*')
+    out_paths = Dir.glob('./test/' + task + '/out/*').sort
     ac_list = []
 
     out_paths.each_with_index do |path, i|

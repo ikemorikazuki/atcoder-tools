@@ -1,32 +1,59 @@
-require #"atcoder.rb"の絶対パス
-require #"project.rb"の絶対パス
+require "lib/atcoder.rbの絶対パス"
+require "project.rbの絶対パス"
 
 # DEBUG: python, scala, kotlin, などのコンパイルの設定がまだできていない
 
 def take_task(text)
   puts text
-  tasks = Dir.glob("./src/*")
 
-  if tasks.length < 1
-    puts "[info] no source file"
+  language_list = []
+  File.foreach("./language.txt"){ |line|
+    language_list.push(line.chomp)
+  }
+
+  language_list = language_list.sort
+
+  if language_list.length < 1
+    puts "[Warn] no source file"
+    exit 1
+  end
+  task_hash = {}
+  language_list.each do |lang|
+    task_hash[lang] = Dir.glob("./src/" + lang + "/*").map { |e| File.basename(e) }.sort
+  end
+
+
+  task_hash.each_with_index do |(key, value), i|
+    puts "\e[30;43m<#{key}>\e[m "
+    if value.length == 0
+      puts "No source"
+    end
+    value.each_with_index do |task, j|
+      puts "[#{i+1}#{j+1}] -> #{task}"
+    end
+  end
+
+  print "[info] select number :=> "
+  s = $stdin.gets.chomp
+  a = s[0].to_i
+  b = s[1..-1].to_i
+  #a, b = $stdin.gets.chomp.split("").map { |e| e.to_i }  # BUG: 言語数が二桁になるとバグになる
+
+  if a > language_list.length
+    puts "[ERROR] lnoger language number"
+    exit 1
+  end
+  if !task_hash.key?(language_list[a-1])
+    puts "[ERROR] no language"
     exit 1
   end
 
-  tasks = tasks.map { |e| File.basename(e) }.sort
-
-  tasks.each_with_index do |task, i|
-    puts "[#{i+1}]-> #{task}"
-  end
-
-  print "select number :=> "
-  n = $stdin.gets.chomp.to_i
-  if n > tasks.length
-    puts "larger number"
+  if b > task_hash[language_list[a-1]].length
+    puts "[ERROR] longer task number"
     exit 1
   end
 
-  return tasks[n-1]
-
+  return task_hash[language_list[a-1]][b-1]
 end
 
 
@@ -47,13 +74,13 @@ end
 ########################################################################
 
 
-languages = {"Ruby"=>".rb", "Python"=>".py", "Haskell"=>".hs", "Scala"=>".scala", "C"=>".c"}
+languages = {"Ruby"=>".rb", "Python"=>".py", "Haskell"=>".hs", "Rust" => ".rs", "Scala"=>".scala", "C"=>".c", "Go"=>".go"}
 
 if ARGV.length < 1
-  puts "number of arguments is 1."
+  puts "[Warn] number] of arguments is 1."
   exit 1
 elsif ARGV.length > 2
-  puts "number of arguments is 1."
+  puts "[Warn] number of arguments is 1."
   exit 1
 end
 
@@ -74,7 +101,7 @@ when "sample" then
   usr.login
   usr.get_samples(url)
   usr.save_sample
-  save_task(usr.task_list_href.keys)
+  save_task(usr.task_list_href.keys.map { |e| e.gsub("/", ":") })
 
 when "source" then
   Project.make_source(languages)
