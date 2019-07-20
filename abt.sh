@@ -15,7 +15,7 @@ fi
 ARG=$1
 
 case $ARG in
-  "~test" ) ruby "/Users/ikemorikaduki/Documents/Myprograming/atcoder-tools/app/build-tool.rb" $ARG & stop
+  "~test" ) ruby "build-tool.rbの絶対パス" $ARG & stop
     ;;
-  * ) ruby "/Users/ikemorikaduki/Documents/Myprograming/atcoder-tools/app/build-tool.rb" $ARG 
+  * ) ruby "build-tool.rbの絶対パス" $ARG 
 esac
