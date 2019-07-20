@@ -1,0 +1,16 @@
+[user]
+  username = "ここにユーザー名をかく"
+  passward = "ここにパスワードをかく"
+
+[languages]
+  [languages.Rust]
+    language  = "Rust"
+    extension =  ".rs"
+    compile   = true
+    command   = "rustc -O #{file}  -o ./bin/Main"
+
+  [languages.Ruby]
+    language  = "Ruby"
+    extension = ".rb"
+    compile   = false
+    command   = "ruby #{file}"
