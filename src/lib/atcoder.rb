@@ -32,7 +32,7 @@ class Atcoder
     rescue => e
       puts '[info] FAILED login :('
       puts e
-      puts 1
+      exit 1
     end
   end
 
@@ -41,7 +41,6 @@ class Atcoder
     begin
       task_page = @agent.get(tasks_url)
       links = task_page.search('//*[@id="main-container"]/div[1]/div[2]/div/table/tbody/tr/td/a')
-      puts links
       links.each_with_index do |link, i|
         if (i+1) % 3 == 0
           name = links[i-2].text + "_" + links[i-1].text
@@ -68,10 +67,9 @@ class Atcoder
 
     begin
       page = @agent.get(task_url)
-      samples = page.search('pre')
+      samples = page.search('//*[@id="task-statement"]/span/span[1]/div')[3..-1].search('pre')
       leng = samples.length
-      samples = samples[1..(leng / 2 - 1)].map { |e| e.text.gsub("\r", '') } # BUG: 英語圏向けのコンテストと同時開催じゃないと正しくサンプルを取得できない
-
+      samples = samples.map { |e| e.text.gsub("\r", '') } 
       samples.each_with_index do |sample, i|
         count = i / 2 + 1
         if i % 2 == 0
