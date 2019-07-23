@@ -36,6 +36,7 @@ class Atcoder
     end
   end
 
+  # 問題の一覧とurlを取得する関数
   def get_taskslist(tasks_url)
     # tasks_url: コンテストの問題一覧ページ
     begin
@@ -68,8 +69,7 @@ class Atcoder
     begin
       page = @agent.get(task_url)
       samples = page.search('//*[@id="task-statement"]/span/span[1]/div')[3..-1].search('pre')
-      leng = samples.length
-      samples = samples.map { |e| e.text.gsub("\r", '') } 
+      samples = samples.map { |e| e.text.gsub("\r", '') }
       samples.each_with_index do |sample, i|
         count = i / 2 + 1
         if i % 2 == 0
@@ -84,6 +84,7 @@ class Atcoder
     end
   end
 
+  # コンテストのサンプルを全て取得する関数
   def get_samples(tasks_url)
     puts '[info] taking samples...'
     # tasks_url : 問題一覧ページのURL
