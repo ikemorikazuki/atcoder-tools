@@ -13,7 +13,7 @@ class Project
 
   # configファイルを読み込む
   def initialize
-    @config = Config.new()
+    @config = Config.new
   end
 
   # Projectの初期ディレクトリを生成する
