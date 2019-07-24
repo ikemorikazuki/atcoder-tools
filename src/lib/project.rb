@@ -17,12 +17,17 @@ class Project
 
   # Projectの初期ディレクトリを生成する
   def init
-    init_config = { 'task' => '', 'tasks' => [], 'languages' => [] }
+    init_config = { 'task' => {'now_language' => '', 'now_task' => ''}, 'tasks' => [], 'languages' => [] }
 
     puts '[info] make directory...  ./src, ./test, ./bin, ./result'
     FileUtils.mkdir_p(['./src', './test', './bin','./result'])
-    puts '[info] make file... config'
 
+    config = Config.new
+    main_lang = config.get_main_lang
+    init_config['task']['now_language'] = main_lang
+
+
+    puts '[info] make file... config'
     config = TomlRB.dump(init_config)
     file = File.open('config.toml', 'w')
     file.puts config
