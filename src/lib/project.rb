@@ -17,7 +17,7 @@ class Project
 
   # Projectの初期ディレクトリを生成する
   def init
-    init_config = { 'tasks' => [], 'languages' => [] }
+    init_config = { 'task' => '', 'tasks' => [], 'languages' => [] }
 
     puts '[info] make directory...  ./src, ./test, ./bin, ./result'
     FileUtils.mkdir_p(['./src', './test', './bin','./result'])
@@ -27,6 +27,29 @@ class Project
     file = File.open('config.toml', 'w')
     file.puts config
     file.close
+  end
+
+  # 指定した言語の初期ソースコードを作成する
+  def source(lang)
+    ext = @config.get_extension(lang)
+
+    FileUtils.mkdir_p("./src/#{lang}")
+    templete = File.read(ABTROOT + '/templete/' + lang + ext)
+    config = TomlRB.load_file('./config.toml')
+
+    config['tasks'].each do |task|
+      source = File.open("./src/#{lang}/#{task}#{ext}", "w")
+      source.puts templete
+      source.close
+    end
+
+    unless config['languages'].include?(lang)
+      config['languages'].push(lang)
+      config = TomlRB.dump(config)
+      file = File.open("./config.toml", "w")
+      file.puts config
+      file.close
+    end
   end
 
   # 初期ソースコードを生成
@@ -46,31 +69,12 @@ class Project
     end
 
     lang = languages[n-1]
-    ext = @config.get_extension(lang)
 
-    FileUtils.mkdir_p("./src/#{lang}")
-    templete = File.read(ABTROOT + '/templete/' + lang + ext)
-    config = TomlRB.load_file('./config.toml')
-
-    config["tasks"].each do |task|
-      source = File.open("./src/#{lang}/#{task}#{ext}", "w")
-      source.puts templete
-      source.close
-    end
-
-    unless config['languages'].include?(lang)
-      config['languages'].push(lang)
-      config = TomlRB.dump(config)
-      file = File.open("./config.toml", "w")
-      file.puts config
-      file.close
-    end
-
+    source(lang)
   end
-
 end
 
 
 project = Project.new
-# project.init
+project.init
 project.init_source
