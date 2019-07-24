@@ -1,6 +1,6 @@
 require 'toml-rb'
 
-# configファイルから要素を抜き出すライブラリ
+# 言語設定のconfigファイルから要素を抜き出すライブラリ
 
 
 class Config
@@ -45,10 +45,10 @@ class Config
       @config_file['languages'][lang]['command']
     end
 
-    #
+    # 問題名と言語名から実行ファイルを生成するコマンドを作成
     def make_command(task, lang)
-      ext = get_extension(lang)
-      cmd = get_command(lang)
+      ext = self.get_extension(lang)
+      cmd = self.get_command(lang)
       left  = 0
       right = 0
       for i in 0..cmd.length-1 do
@@ -59,7 +59,7 @@ class Config
         end
       end
 
-      cmd[0..left - 1] + file + ext + cmd[right + 1..-1]
+      cmd[0..left - 1] + task + ext + cmd[right + 1..-1]
     end
 end
 
