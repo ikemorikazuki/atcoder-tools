@@ -44,10 +44,27 @@ class Config
     def get_command(lang)
       @config_file['languages'][lang]['command']
     end
+
+    #
+    def make_command(task, lang)
+      ext = get_extension(lang)
+      cmd = get_command(lang)
+      left  = 0
+      right = 0
+      for i in 0..cmd.length-1 do
+        if cmd[i] == '{'
+          left = i
+        elsif cmd[i] == '}'
+          right = i
+        end
+      end
+
+      cmd[0..left - 1] + file + ext + cmd[right + 1..-1]
+    end
 end
 
 
-=begin
+
 config = Config.new
 puts "username = #{config.get_username}"
 puts "password = #{config.get_password}"
@@ -56,4 +73,4 @@ puts "list_of_lang = #{config.get_list_of_lang}"
 puts "extension of Rust = #{config.get_extension('Rust')}"
 puts "need compile for Rust = #{config.need_compile_for('Rust')}"
 puts "command of Rust = #{config.get_command('Rust')}"
-=end
+puts "commmand of rust = #{config.make_command("A", 'Rust')}"
