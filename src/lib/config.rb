@@ -4,6 +4,7 @@ require 'toml-rb'
 
 
 class Config
+  attr_reader :config_file
   ABTROOT = ENV['ABT']
     # 設定ファイルを読み込む
     def initialize
@@ -40,15 +41,26 @@ class Config
       @config_file['languages'][lang]['compile']
     end
 
-    # command を取得する
-    def get_command(lang)
-      @config_file['languages'][lang]['command']
+    # compile_command を取得する
+    def get_compile_command(lang)
+      if need_compile_for(lang)
+        @config_file['languages'][lang]['compile_command']
+      else
+        puts "not compile lang"
+        exit 1
+      end
     end
 
+    # 実行コマンドを取得する
+    def get_exec_command(lang)
+      @config_file['languages'][lang]['exec_command']
+    end
+
+
     # 問題名と言語名から実行ファイルを生成するコマンドを作成
-    def make_command(task, lang)
+    def make_compile_command(task, lang)
       ext = self.get_extension(lang)
-      cmd = self.get_command(lang)
+      cmd = self.get_compile_command(lang)
       left  = 0
       right = 0
       for i in 0..cmd.length-1 do
@@ -58,19 +70,45 @@ class Config
           right = i
         end
       end
+      file_path = './src/' + lang + '/' + task + ext
+      cmd[0..left - 1] + file_path + cmd[right + 1..-1]
+    end
 
-      cmd[0..left - 1] + task + ext + cmd[right + 1..-1]
+    # 実行コマンドを取得しかつ作成する
+    def make_exec_command(task, lang)
+      if need_compile_for(lang)
+        get_exec_command(lang)
+      else
+        ext = get_extension(lang)
+        cmd = get_exec_command(lang)
+        left  = 0
+        right = 0
+
+        for i in 0..cmd.length-1 do
+          if cmd[i] == '{'
+            left = i
+          elsif cmd[i] == '}'
+            right = i
+          end
+        end
+        file_path = './src/' + lang + '/' + task + ext
+        cmd[0..left - 1] + file_path + cmd[right + 1..-1]
+      end
     end
 end
 
 
-
+=begin
 config = Config.new
+puts config.config_file
 puts "username = #{config.get_username}"
 puts "password = #{config.get_password}"
 puts "mainlanguage = #{config.get_main_lang}"
 puts "list_of_lang = #{config.get_list_of_lang}"
 puts "extension of Rust = #{config.get_extension('Rust')}"
+puts "exec_command = #{config.get_exec_command('Rust')}"
 puts "need compile for Rust = #{config.need_compile_for('Rust')}"
-puts "command of Rust = #{config.get_command('Rust')}"
-puts "commmand of rust = #{config.make_command("A", 'Rust')}"
+puts "compile command of Rust = #{config.get_compile_command('Rust')}"
+puts "compile commmand of rust = #{config.make_compile_command("A", 'Rust')}"
+puts "exec_command of rust = #{config.make_exec_command("A", 'Rust')}"
+=end
