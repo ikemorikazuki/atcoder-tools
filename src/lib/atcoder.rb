@@ -1,9 +1,9 @@
-ABTROOT = ENV['ABT']
+
 
 require "mechanize"
 require 'open-uri'
 require 'fileutils'
-require ABTROOT + '/src/lib/config.rb'
+require ENV['ABT'] + '/src/lib/config.rb'
 
 class Atcoder
   attr_reader :in_and_out, :task_list_href, :submit_links   # アクセスメソッドを定義
@@ -134,7 +134,7 @@ end
 =begin
 my = Atcoder.new
 my.login
-my.get_samples("https://atcoder.jp/contests/abc134/tasks")
+my.get_samples("https://atcoder.jp/contests/abc078/tasks")
 puts my.task_list_href
 puts my.in_and_out
 =end
