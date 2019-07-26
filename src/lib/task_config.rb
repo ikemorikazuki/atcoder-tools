@@ -31,6 +31,7 @@ class TaskConfig
 
     if task_list.include?(task_name)
       puts "[warn] #{task_name} is already exist."
+      exit 1
     else
       @config_file['tasks'].push(task_name)
     end
@@ -42,6 +43,7 @@ class TaskConfig
 
     if lang_list.include?(lang_name)
       puts "[warn] #{lang_name} is already exist."
+      exit 1
     else
       @config_file['languages'].push(lang_name)
     end
@@ -60,11 +62,13 @@ class TaskConfig
   # 現在指定されている問題を更新する
   def update_now_task(task_name)
     @config_file['task']['now_task'] = task_name
+    save_config
   end
 
   # 現在指定されている言語を更新する
   def update_now_lang(lang_name)
     @config_file['task']['now_language'] = lang_name
+    save_config
   end
 
 end
