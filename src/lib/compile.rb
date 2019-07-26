@@ -1,5 +1,4 @@
-ABTROOT = ENV['ABT']
-require ABTROOT + '/src/lib/config.rb'
+require ENV['ABT'] + '/src/lib/config.rb'
 require 'fileutils'
 require 'open3'
 
@@ -12,14 +11,14 @@ class Compile
   end
 
   # 問題と言語を渡されてその問題をコンパイルする
-  def comile_of(task, lang)
+  def compile(task, lang)
     cmd = @config.make_compile_command(task, lang)
 
     printf("[info] compile now ...\n")
     _, e, w = Open3.capture3(cmd)
 
     if w.exitstatus != 0
-      puts "[info] " + text
+      puts '[info] FAILED compile :('
       puts e
       files = Dir.glob('./bin/*')
       files.each { |f| File.delete(f) }
