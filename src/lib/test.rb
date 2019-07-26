@@ -24,7 +24,7 @@ class Test
         files.each { |e| File.delete(e) }
         exit 1
       else
-        f = File.open('./result/' + task + "/#{i}", "w")
+        f = File.open('./result/' + task + "/#{i+1}", "w")
         f.puts out
         f.close
       end
