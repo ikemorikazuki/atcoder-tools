@@ -164,7 +164,6 @@ class Project
     end
 
     execer = Exec.new
-    puts 1
     execer.exec(task, lang)
   end
 
