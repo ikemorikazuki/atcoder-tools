@@ -1,8 +1,5 @@
-require '/Users/ikemorikaduki/Documents/Myprograming/atcoder-tools/lib/exec.rb'
-require 'shellwords'
 
-
-
+# 結果を比較するモジュール
 module Compare
 
   def print_aclist(list)
@@ -32,9 +29,7 @@ module Compare
     printf("--------------------------------------\n")
   end
 
-  def compare(file)
-
-    task = File.basename(file, '.*')
+  def compare(task)
 
     out_paths = Dir.glob('./test/' + task + '/out/*').sort
     ac_list = []
@@ -51,5 +46,3 @@ module Compare
 
   module_function :print_aclist, :print_AC_WA, :compare
 end
-
-# Compare.compare("A - Double Helix.rb")
