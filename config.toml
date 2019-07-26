@@ -1,0 +1,20 @@
+[user]
+  username = ""
+  password = ""
+
+[mainlanguage]
+  language = "Rust"
+
+[languages]
+  [languages.Rust]
+    language  = "Rust"
+    extension =  ".rs"
+    compile   = true
+    compile_command = "rustc -O {file_path}  -o ./bin/Main"
+    exec_command = "./bin/Main"
+
+  [languages.Ruby]
+    language  = "Ruby"
+    extension = ".rb"
+    compile   = false
+    exec_command = "ruby {file_path}"
