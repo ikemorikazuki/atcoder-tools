@@ -17,7 +17,7 @@ class TaskConfig
 
   # 問題一覧を取得する
   def get_task_list
-    @config_file['taksks']
+    @config_file['tasks']
   end
 
   # 使用中の言語一覧を取得する
@@ -41,7 +41,7 @@ class TaskConfig
   # 問題のリストを追加する
   def add_list_of_task(task_list)
     task_list.each do |task|
-      @config['tasks'].push(task)
+      @config_file['tasks'].push(task)
     end
     save_config
   end
