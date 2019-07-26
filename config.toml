@@ -1,6 +1,6 @@
 [user]
-  username = "ここにユーザー名をかく"
-  password = "ここにパスワードをかく"
+  username = ""
+  password = ""
 
 [mainlanguage]
   language = "Rust"
@@ -10,10 +10,11 @@
     language  = "Rust"
     extension =  ".rs"
     compile   = true
-    command   = "rustc -O {file}  -o ./bin/Main"
+    compile_command = "rustc -O {file_path}  -o ./bin/Main"
+    exec_command = "./bin/Main"
 
   [languages.Ruby]
     language  = "Ruby"
     extension = ".rb"
     compile   = false
-    command   = "ruby {file}"
+    exec_command = "ruby {file_path}"
