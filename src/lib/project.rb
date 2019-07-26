@@ -73,13 +73,14 @@ class Project
       exit 1
     end
 
-    lang = languages[n-1]
+    lang = languages[n - 1]
 
     source(lang)
   end
 end
 
-
+=begin
 project = Project.new
 project.init
 project.init_source
+=end
