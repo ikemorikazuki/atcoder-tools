@@ -99,8 +99,42 @@ class Atcoder
 end
 
 
+class User < Atcoder
+
+  def save_sample
+    test_save = "./test"  # 入力を保存するディレクトリ
+    result_save = "./result" # 結果を保存するディレクトリ
+
+    puts "[info] saving samples..."
+
+    if @in_and_out != {} && @in_and_out != nil
+      @in_and_out.each do |name, task|
+        FileUtils.mkdir_p(result_save + "/" + name)
+        # puts "ERROR"; exit 1 if task.length != 2
+        task.each_with_index do |(in_or_out, samples), i|
+          FileUtils.mkdir_p(test_save +  "/" + name +  "/" + in_or_out)
+          samples.each do |number, content|
+            f = File.open(test_save + "/" + name + "/" + in_or_out + "/" +  number, "w")
+            f.puts content
+            f.close
+            File.open(result_save + "/" + name + "/" + number, "w") if i == 0
+          end
+        end
+      end
+    else
+      puts "[info] FAILED. No sample case"
+      exit 1
+    end
+    puts "[info] saved samples !!!"
+  end
+end
+
+
+
+=begin
 my = Atcoder.new
 my.login
 my.get_samples("https://atcoder.jp/contests/abc134/tasks")
 puts my.task_list_href
 puts my.in_and_out
+=end
