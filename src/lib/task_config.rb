@@ -34,7 +34,16 @@ class TaskConfig
       exit 1
     else
       @config_file['tasks'].push(task_name)
+      save_config
     end
+  end
+
+  # 問題のリストを追加する
+  def add_list_of_task(task_list)
+    task_list.each do |task|
+      @config['tasks'].push(task)
+    end
+    save_config
   end
 
   # 使用言語を追加する
@@ -46,6 +55,7 @@ class TaskConfig
       exit 1
     else
       @config_file['languages'].push(lang_name)
+      save_config
     end
   end
 
