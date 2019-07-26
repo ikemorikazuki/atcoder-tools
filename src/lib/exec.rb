@@ -1,5 +1,5 @@
-ABTROOT = ENV['ABT']
-require ABTROOT + '/src/lib/config.rb'
+
+require ENV['ABT'] + '/src/lib/config.rb'
 
 # 実行ファイルを実行するクラス
 class Exec
