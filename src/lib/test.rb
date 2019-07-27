@@ -26,7 +26,7 @@ class Test
         f.puts out
         f.close
       end
-      puts "[info] \e[32msample #{i + 1} test sucess!!\e[0m\n"
+      puts "[info] \e[32m #{task}'s sample #{i + 1} test sucess!!\e[0m\n"
     end
 
     puts '[info] all test done.'
