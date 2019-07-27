@@ -12,7 +12,7 @@ class Select
     task_list = @config.get_task_list
 
     if task_list.length.zero?
-      puts '[error] no task'
+      puts "[error] \e[31m no task.\e[0m"
       exit 1
     end
 
@@ -30,7 +30,7 @@ class Select
     lang_list = @config.get_lang_list
 
     if lang_list.length.zero?
-      puts '[error] no language'
+      puts "[error] \e[31m no language.\e[0m"
       exit 1
     end
 

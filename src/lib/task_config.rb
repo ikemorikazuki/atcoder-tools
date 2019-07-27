@@ -30,7 +30,7 @@ class TaskConfig
     task_list = self.get_task_list
 
     if task_list.include?(task_name)
-      puts "[warn] #{task_name} is already exist."
+      puts "[warn] \e[33m#{task_name} is already exist.\e[0m"
       exit 1
     else
       @config_file['tasks'].push(task_name)
@@ -51,7 +51,7 @@ class TaskConfig
     lang_list = self.get_lang_list
 
     if lang_list.include?(lang_name)
-      puts "[warn] #{lang_name} is already exist."
+      puts "[warn] \e[33m#{lang_name} is already exist.\e[0m"
       exit 1
     else
       @config_file['languages'].push(lang_name)
