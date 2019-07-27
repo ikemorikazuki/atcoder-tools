@@ -85,7 +85,7 @@ class Project
     n = $stdin.gets.chomp.to_i
 
     if languages.length < n
-      printf("[info] \e[31;1mError number is longer\e[m\n")
+      printf("[info] \e[31mError number is longer\e[0m\n")
       exit 1
     end
 
@@ -118,7 +118,7 @@ class Project
     lang_list = @task_config.get_lang_list
 
     if lang_list.length.zero?
-      puts '[error] no language'
+      puts "[error] \e[31m no language\e[0m"
       exit 1
     end
 
@@ -138,7 +138,7 @@ class Project
     lang_list = @config.get_list_of_lang
 
     if lang_list.length.zero?
-      puts '[error] no language'
+      puts "[error] \e[31m no language\e[0m"
       exit 1
     end
 
@@ -179,6 +179,7 @@ class Project
 
     tester = Test.new
     tester.test(task, lang)
+    puts "==============================={\e[32;1m TEST \e[0m}=========================="
     Compare.compare(task)
   end
 end

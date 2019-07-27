@@ -16,7 +16,7 @@ class Test
       input_data = File.read('./test/' + task + "/in/#{i+1}")
       out, err, ww = Open3.capture3(exec_command, :stdin_data=>input_data)
       if ww.exitstatus != 0
-        puts '[info] complete'
+        puts "[error] \e[31m sample #{i + 1} test failed.\e[0m"
         puts err
         files = Dir.glob('./bin/*')
         files.each { |e| File.delete(e) }
@@ -26,10 +26,10 @@ class Test
         f.puts out
         f.close
       end
-      puts "[info] \e[32mtest sucess!!\e[m\n"
+      puts "[info] \e[32msample #{i + 1} test sucess!!\e[0m\n"
     end
 
-    puts '[info] complete'
+    puts '[info] all test done.'
     files = Dir.glob('./bin/*')
     files.each { |e| File.delete(e) }
   end

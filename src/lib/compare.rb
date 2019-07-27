@@ -11,7 +11,7 @@ module Compare
       end
     end
     puts
-    printf("--------------------------------------\n\n")
+    printf("-------------------------------------------------------------------\n\n")
   end
 
   def print_AC_WA(out, result, number)
@@ -26,7 +26,7 @@ module Compare
       printf("CORRECT: \n%s\n", out)
       printf("ANSWER: \n\e[31;1m%s\e[m\n", result)
     end
-    printf("--------------------------------------\n")
+    printf("-------------------------------------------------------------------\n")
   end
 
   def compare(task)

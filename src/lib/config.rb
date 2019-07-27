@@ -46,7 +46,7 @@ class Config
       if need_compile_for(lang)
         @config_file['languages'][lang]['compile_command']
       else
-        puts "not compile lang"
+        puts "[error]  \e[31m #{lang} is not compile language.\e[0m"
         exit 1
       end
     end
