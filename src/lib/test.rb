@@ -9,8 +9,6 @@ class Test
 
   def test(task, lang)
     input_files_length = Dir.glob('./test/' + task + '/' +  'in/*').length
-    cmp = Compile.new
-    cmp.compile(task, lang)
 
     exec_command = @config.make_exec_command(task, lang)
 
