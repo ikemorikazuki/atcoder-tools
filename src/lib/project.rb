@@ -3,8 +3,6 @@
 require 'toml-rb'
 require "fileutils"
 require 'open-uri'
-require 'fssm'
-require 'shellwords'
 require ENV['ABT'] + '/src/lib/config.rb'
 require ENV['ABT'] + '/src/lib/task_config.rb'
 require ENV['ABT'] + '/src/lib/compile.rb'
@@ -45,8 +43,8 @@ class Project
 
   # 現在してされている問題と言語を表示する
   def now
-    puts "now lang => #{@task_config.get_now_lang}"
-    puts "now task => #{@task_config.get_now_task}"
+    puts "[info] now lang => #{@task_config.get_now_lang}"
+    puts "[info] now task => #{@task_config.get_now_task}"
   end
 
   # 指定した言語の初期ソースコードを作成する
