@@ -11,6 +11,8 @@
   $ gem install mechanize  
   $ gem install fileutils  
   $ gem install toml-rb  
+  $ git clone git@github.com:ikemorikazuki/atcoder-tools.git  
+  $ 
 ## Description
 
 ## Demo
