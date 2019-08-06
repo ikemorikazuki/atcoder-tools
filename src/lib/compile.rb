@@ -22,10 +22,11 @@ class Compile
       puts e
       files = Dir.glob('./bin/*')
       files.each { |f| File.delete(f) }
-      exit 1
+      return false
     else
       puts "[info] \e[32mcompile sucess.\e[0m\n"
       puts e
+      return true
     end
   end
 end

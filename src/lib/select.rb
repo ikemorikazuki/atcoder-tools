@@ -13,7 +13,7 @@ class Select
 
     if task_list.length.zero?
       puts "[error] \e[31m no task.\e[0m"
-      exit 1
+      return false
     end
 
     task_list.each_with_index do |task, i|
@@ -23,6 +23,7 @@ class Select
     puts '[info] select task => '
     n = $stdin.gets.chomp.to_i
     @config.update_now_task(task_list[n - 1])
+    return true
   end
 
   # 言語を設定する
@@ -31,7 +32,7 @@ class Select
 
     if lang_list.length.zero?
       puts "[error] \e[31m no language.\e[0m"
-      exit 1
+      return false
     end
 
     lang_list.each_with_index do |lang, i|
@@ -41,5 +42,6 @@ class Select
     puts '[info] select lang => '
     n = $stdin.gets.chomp.to_i
     @config.update_now_task(lang_list[n - 1])
+    return true
   end
 end

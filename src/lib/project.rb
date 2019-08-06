@@ -43,8 +43,27 @@ class Project
 
   # 現在してされている問題と言語を表示する
   def now
-    puts "[info] now lang => #{@task_config.get_now_lang}"
-    puts "[info] now task => #{@task_config.get_now_task}"
+    if @task_config != nil
+      puts "[info] now lang => #{@task_config.get_now_lang}"
+      puts "[info] now task => #{@task_config.get_now_task}"
+    end
+  end
+
+  # 現在センタされている問題を返す
+  def get_now_task
+    if @task_config != nil
+        @task_config.get_now_task
+    else
+      'not select task'
+    end
+  end
+
+  def get_now_lang
+    if @task_config != nil
+        @task_config.get_now_lang
+    else
+      'not select lang'
+    end
   end
 
   # 指定した言語の初期ソースコードを作成する
@@ -68,6 +87,7 @@ class Project
       file.puts config
       file.close
     end
+    return true
   end
 
   # 初期ソースコードを生成
@@ -84,12 +104,14 @@ class Project
 
     if languages.length < n
       printf("[info] \e[31mError number is longer\e[0m\n")
-      exit 1
+      return false
     end
 
     lang = languages[n - 1]
 
     source(lang)
+
+    return true
   end
 
 
@@ -98,7 +120,7 @@ class Project
     task_list = @task_config.get_task_list
     if task_list.length.zero?
       puts '[error] no task'
-      exit 1
+      return false
     end
 
     task_list.each_with_index do |task, i|
@@ -109,6 +131,7 @@ class Project
     print '=> '
     n = $stdin.gets.chomp.to_i
     @task_config.update_now_task(task_list[n - 1])
+    return true
   end
 
   # 言語を設定する
@@ -117,7 +140,7 @@ class Project
 
     if lang_list.length.zero?
       puts "[error] \e[31m no language\e[0m"
-      exit 1
+      return "", false
     end
 
     lang_list.each_with_index do |lang, i|
@@ -127,7 +150,7 @@ class Project
     puts '[info] select lang'
     print '=> '
     n = $stdin.gets.chomp.to_i
-    @task_config.update_now_lang(lang_list[n - 1])
+    return @task_config.update_now_lang(lang_list[n - 1]), true
   end
 
 
@@ -137,7 +160,7 @@ class Project
 
     if lang_list.length.zero?
       puts "[error] \e[31m no language\e[0m"
-      exit 1
+      return false
     end
 
     lang_list.each_with_index do |lang, i|
@@ -172,13 +195,17 @@ class Project
 
     if @config.need_compile_for(lang)
       cmplr = Compile.new
-      cmplr.compile(task, lang)
+      s_c = cmplr.compile(task, lang)
+      return false unless s_c
     end
 
     tester = Test.new
-    tester.test(task, lang)
-    puts "==============================={\e[32;1m TEST \e[0m}=========================="
+    s_t = tester.test(task, lang)
+    return false unless s_t
+
+    puts "==============================={\e[32;1m TEST \e[0m}==========================="
     Compare.compare(task)
+    return true
   end
 end
 

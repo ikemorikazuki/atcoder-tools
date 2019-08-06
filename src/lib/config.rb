@@ -44,10 +44,10 @@ class Config
     # compile_command を取得する
     def get_compile_command(lang)
       if need_compile_for(lang)
-        @config_file['languages'][lang]['compile_command']
+        return @config_file['languages'][lang]['compile_command'], true
       else
         puts "[error]  \e[31m #{lang} is not compile language.\e[0m"
-        exit 1
+        return "", false
       end
     end
 
@@ -60,7 +60,7 @@ class Config
     # 問題名と言語名から実行ファイルを生成するコマンドを作成
     def make_compile_command(task, lang)
       ext = self.get_extension(lang)
-      cmd = self.get_compile_command(lang)
+      cmd, s = self.get_compile_command(lang)
       left  = 0
       right = 0
       for i in 0..cmd.length-1 do

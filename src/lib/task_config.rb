@@ -31,10 +31,11 @@ class TaskConfig
 
     if task_list.include?(task_name)
       puts "[warn] \e[33m#{task_name} is already exist.\e[0m"
-      exit 1
+      return false
     else
       @config_file['tasks'].push(task_name)
       save_config
+      return true
     end
   end
 
@@ -52,10 +53,11 @@ class TaskConfig
 
     if lang_list.include?(lang_name)
       puts "[warn] \e[33m#{lang_name} is already exist.\e[0m"
-      exit 1
+      return false
     else
       @config_file['languages'].push(lang_name)
       save_config
+      return true
     end
   end
 

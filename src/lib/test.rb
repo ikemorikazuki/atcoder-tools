@@ -20,7 +20,7 @@ class Test
         puts err
         files = Dir.glob('./bin/*')
         files.each { |e| File.delete(e) }
-        exit 1
+        return false
       else
         f = File.open('./result/' + task + "/#{i+1}", "w")
         f.puts out
@@ -32,5 +32,7 @@ class Test
     puts '[info] all test done.'
     files = Dir.glob('./bin/*')
     files.each { |e| File.delete(e) }
+
+    return true
   end
 end

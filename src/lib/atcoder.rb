@@ -32,8 +32,9 @@ class Atcoder
     rescue => e
       puts '[info] FAILED login :('
       puts e
-      exit 1
+      return false
     end
+    return true
   end
 
   # 問題の一覧とurlを取得する関数
@@ -53,8 +54,9 @@ class Atcoder
     rescue => e
         puts "[info] FAILED get_taskslist method"
         puts e
-        exit 1
+        return false
     end
+    return true
   end
 
   # 指定された問題のサンプルを取得する
@@ -81,7 +83,9 @@ class Atcoder
     rescue => e
       puts '[info] FAILED get_in_and_out method'
       puts e
+      return false
     end
+    return true
   end
 
   # コンテストのサンプルを全て取得する関数
@@ -95,7 +99,6 @@ class Atcoder
     end
     puts '[info] taked samples !!!'
   end
-
 end
 
 
@@ -123,9 +126,10 @@ class User < Atcoder
       end
     else
       puts "[info] FAILED. No sample case"
-      exit 1
+      return false
     end
     puts "[info] saved samples !!!"
+    return true
   end
 end
 
