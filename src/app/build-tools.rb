@@ -3,20 +3,28 @@ require ENV['ABT'] + '/src/lib/atcoder.rb'
 require ENV['ABT'] + '/src/lib/task_config.rb'
 
 
-puts "wellcome atcoder build tools"
+
+puts '    #      # # # # #    # # #     # # #    # # #    # # # #   # # #   '
+puts '   # #         #       #         #     #   #    #   #         #     # '
+puts '  #   #        #      #         #       #  #     #  # # # #   # # #   '
+puts ' # # # #       #       #         #     #   #    #   #         #    #  '
+puts '#       #      #        # # #     # # #    # # #    # # # #   #     # '
+puts 'wellcome atcoder build tools'
+
 
 loop {
-  print "sbt> "
+  project = Project.new
+  print "abt::\e[38;5;118m#{project.get_now_lang}\e[m::\e[38;5;122m#{project.get_now_task}\e[m:> "
   arg = gets.chomp.to_s
 
-  project = Project.new
+
 
   case arg
   when "new"
     project.init()
 
   when "sample"
-    puts "[info] please URL of Atcoder tasks"
+    puts "[info] please URL of Atcoder tasks\n :=>"
     url = $stdin.gets.chomp
     puts url
 
