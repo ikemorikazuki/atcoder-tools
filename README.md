@@ -7,12 +7,16 @@
   - 対応言語は動作確認済みはRust, Ruby, Haskell, Scala, Python, Go
 
 ## Install
-  $ gem install open3  
-  $ gem install mechanize  
-  $ gem install fileutils  
-  $ gem install toml-rb  
-  $ git clone git@github.com:ikemorikazuki/atcoder-tools.git  
-  $ 
+
+```bash
+$ gem install open3  
+$ gem install mechanize  
+$ gem install fileutils  
+$ gem install toml-rb  
+$ git clone git@github.com:ikemorikazuki/atcoder-tools.git  
+$
+```
+
 ## Description
 
 ## Demo

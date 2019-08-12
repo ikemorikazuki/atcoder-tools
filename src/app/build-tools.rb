@@ -24,7 +24,7 @@ loop {
     project.init()
 
   when "sample"
-    puts "[info] please URL of Atcoder tasks\n :=>"
+    print "[info] please URL of Atcoder tasks\n :=> "
     url = $stdin.gets.chomp
     puts url
 
