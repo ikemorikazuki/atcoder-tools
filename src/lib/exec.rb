@@ -12,9 +12,10 @@ class Exec
   # 実行ファイルを実行する
   def exec(task, lang)
     exec_command = @config.make_exec_command(task, lang)
-    out = `#{exec_command}`
+
     puts "============================{\e[32;1mOut Put\e[m}================================"
-    puts out
+    pid = spawn(exec_command)
+    Process.wait pid
     puts '====================================================================='
   end
 end
