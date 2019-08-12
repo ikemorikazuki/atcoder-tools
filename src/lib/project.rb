@@ -130,6 +130,10 @@ class Project
     puts '[info] select task'
     print '=> '
     n = $stdin.gets.chomp.to_i
+    if !(0 <= n && n <= task_list.length)
+      puts '[error] longer task number'
+      return false
+    end
     @task_config.update_now_task(task_list[n - 1])
     return true
   end
